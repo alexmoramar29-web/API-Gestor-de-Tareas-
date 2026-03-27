@@ -7,11 +7,13 @@ async function cargar() {
     lista.innerHTML = "";
     
     tareas.forEach(t => {
-        let estado = t.completada ? "Completada" : "Pendiente";
+        let estado = t.completada ? "✅ Completada" : "⏳ Pendiente";
         lista.innerHTML += `
             <li>
                 <strong>${t.materia}</strong> - ${t.titulo} <br>
-                <small><em>Estado: ${estado}</em></small>
+                <small><em>Estado: ${estado}</em></small> <br><br>
+                <button onclick="cambiarEstado(${t.id}, '${t.titulo}', '${t.materia}', ${t.completada})" style="margin-bottom: 5px; background-color: #555;">Cambiar Estado</button>
+                <button onclick="eliminar(${t.id})" style="background-color: #d9534f;">Eliminar</button>
             </li>`;
     });
 }
@@ -27,12 +29,26 @@ async function guardar() {
         body: JSON.stringify({ titulo: titulo, materia: materia, completada: completada })
     });
 
-    // esto limpia todo cuando presionas el boton de agregar tarea
     document.getElementById("titulo").value = "";
     document.getElementById("materia").value = "";
     document.getElementById("completada").checked = false; 
     cargar();
 }
 
+async function cambiarEstado(id, titulo, materia, estadoActual) {
+    await fetch(`${url}/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ titulo: titulo, materia: materia, completada: !estadoActual })
+    });
+    cargar();
+}
+
+async function eliminar(id) {
+    await fetch(`${url}/${id}`, {
+        method: "DELETE"
+    });
+    cargar();
+}
 
 cargar();

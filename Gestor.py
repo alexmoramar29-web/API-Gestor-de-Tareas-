@@ -4,11 +4,10 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-# Este es un permiso para que pyhton se comunique con html sin problemad
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  
-    allow_methods=["*"], 
+    allow_origins=["*"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
@@ -45,3 +44,23 @@ async def crear_tarea(tarea: Tarea):
     }
     tareas_db.append(nueva_tarea)
     return nueva_tarea
+
+@app.put("/tareas/{id}", status_code=status.HTTP_200_OK)
+async def actualizar_tarea(id: int, tarea: Tarea):
+    if not tarea.titulo or not tarea.materia:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Faltan datos")
+        
+    for t in tareas_db:
+        if t["id"] == id:
+            t["titulo"] = tarea.titulo
+            t["materia"] = tarea.materia
+            t["completada"] = tarea.completada
+            return t
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No existe")
+
+@app.delete("/tareas/{id}", status_code=status.HTTP_200_OK)
+async def eliminar_tarea(id: int):
+    for i, t in enumerate(tareas_db):
+        if t["id"] == id:
+            return tareas_db.pop(i)
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No existe")
