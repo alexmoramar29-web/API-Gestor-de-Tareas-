@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Tareas</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="gestor.js" defer></script>
+</head>
+<body>
+    <h1>Gestor de Tareas</h1>
+    
+    <input type="text" id="titulo" placeholder="Título de la tarea">
+    <input type="text" id="materia" placeholder="Materia">
+    
+    <label>
+        <input type="checkbox" id="completada"> Ya está completada
+    </label>
+    
+    <button onclick="guardar()">Agregar Tarea (POST)</button>
+
+    <h2>Mis Pendientes (GET)</h2>
+    <ul id="lista"></ul>
+</body>
+</html>
